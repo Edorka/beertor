@@ -1,0 +1,24 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated artifacts (rebuild with build_db.py / export_csv.py)
+beer.db
+data/beers.csv
+
+# API response cache (re-downloaded by build_db.py)
+data/punkapi/
+
+# Editors / OS junk
+.vscode/
+.idea/
+*.swp
+.DS_Store
