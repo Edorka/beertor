@@ -9,6 +9,7 @@ Requires the server to be running: docker compose up -d
 
 Usage: .venv/bin/python import_weaviate.py
 """
+import os
 import sqlite3
 from pathlib import Path
 
@@ -56,13 +57,22 @@ WHERE astringency IS NOT NULL AND hoppy IS NOT NULL
 """
 
 
+def connect_weaviate():
+    """Local (compose) or remote (k8s Job) via env: WEAVIATE_HOST/PORT/GRPC_PORT."""
+    return weaviate.connect_to_local(
+        host=os.environ.get("WEAVIATE_HOST", "localhost"),
+        port=int(os.environ.get("WEAVIATE_PORT", "8080")),
+        grpc_port=int(os.environ.get("WEAVIATE_GRPC_PORT", "50051")),
+    )
+
+
 def main():
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
     rows = con.execute(SQL).fetchall()
     con.close()
 
-    client = weaviate.connect_to_local()
+    client = connect_weaviate()
 
     # drop and recreate, same style as build_db.py
     if client.collections.exists(COLLECTION):
